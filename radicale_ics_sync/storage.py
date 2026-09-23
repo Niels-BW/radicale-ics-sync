@@ -17,6 +17,7 @@ import re
 from typing import Dict, List
 
 import radicale.item as radicale_item
+from radicale import pathutils
 from radicale.log import logger
 from radicale.storage import BaseStorage, ComponentNotFoundError
 from radicale.storage.multifilesystem import Storage as MultiFileSystemStorage
@@ -118,6 +119,9 @@ def _compile_patterns(patterns: List[str]) -> List[re.Pattern]:
 
 def _href_for_uid(uid: str) -> str:
     """Derive a filesystem-safe Radicale href from an arbitrary event UID."""
+    href = uid + ".ics"
+    if pathutils.is_safe_filesystem_path_component(href):
+        return href
     return hashlib.sha256(uid.encode("utf-8")).hexdigest() + ".ics"
 
 
